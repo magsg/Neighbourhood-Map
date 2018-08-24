@@ -1,21 +1,46 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import MapGL, {NavigationControl} from 'react-map-gl';
 import './App.css';
 
+
 class App extends Component {
+
+constructor(props) {
+super(props);
+this.state = {
+  container: {
+    latitude: 50.0,
+       longitude: 19.9,
+       zoom: 10,
+       bearing: 0,
+       pitch: 0,
+       width: 500,
+       height: 500,
+  }
+};
+}
+
   render() {
+
+const {container} = this.state;
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <main>
+      // <div id="map">
+      <MapGL
+      {...container}
+      mapStyle= 'mapbox://styles/mapbox/streets-v10'
+      mapboxApiAccessToken=''>
+      <div className="nav">
+        <NavigationControl/>
       </div>
+    </MapGL>
+      // </div>
+      </main>
+
     );
   }
 }
+
 
 export default App;
