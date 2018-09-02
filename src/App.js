@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapGL, {NavigationControl} from 'react-map-gl';
+import MapGL, {Marker, NavigationControl} from 'react-map-gl';
 import './App.css';
 
 
@@ -16,9 +16,40 @@ this.state = {
        pitch: 0,
        width: 500,
        height: 500,
-  }
+
+  },
+  places: [],
+  markers: []
 };
 }
+
+componentDidMount() {
+        this.getPlaces();
+    }
+
+getPlaces() {
+     let url = 'https://api.foursquare.com/v2/venues/explore?'
+     let parameters = {
+         client_id: 'VSHIOMXPUT1YOHRSEI2I5FJ1FWHT2JNFAY3ZOGV5MZJ10WGJ',
+         client_secret: 'R43ANCXPWOWCTOH0FKIAJZS45BLEZ2ANU1XH1PY5DRVWJO4X',
+         v: "20180323",
+         section: 'food',
+         ll: '50.0, 19.9',
+         limit: '7'
+     }
+
+     fetch(url + new URLSearchParams(parameters))
+     .then(response => response.json())
+     .then(parsedJson => {
+         this.setState({
+             places: parsedJson.response.groups[0].items
+         });
+
+         console.log(this.state.places); //it's fetching!
+     })
+     .catch(error => alert('error!' + error))
+ }
+
 
   render() {
 
@@ -26,16 +57,14 @@ const {container} = this.state;
 
     return (
       <main>
-      // <div id="map">
       <MapGL
       {...container}
       mapStyle= 'mapbox://styles/mapbox/streets-v10'
-      mapboxApiAccessToken=''>
+      mapboxApiAccessToken='pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'>
       <div className="nav">
         <NavigationControl/>
       </div>
     </MapGL>
-      // </div>
       </main>
 
     );
