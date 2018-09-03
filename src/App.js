@@ -20,7 +20,6 @@ this.state = {
 
   },
   places: [],
-  markers: []
 };
 }
 
@@ -33,6 +32,8 @@ componentDidMount() {
     componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
   }
+
+  //resize map depending on viewport
 
   resize = () => {
   this.setState({
@@ -48,6 +49,7 @@ updateViewport = (container) => {
    this.setState({container});
  }
 
+//fetch venues using foursquare api
 
 getPlaces = () => {
      let url = 'https://api.foursquare.com/v2/venues/explore?'
@@ -56,7 +58,7 @@ getPlaces = () => {
          client_secret: 'R43ANCXPWOWCTOH0FKIAJZS45BLEZ2ANU1XH1PY5DRVWJO4X',
          v: "20180323",
          section: 'food',
-         ll: '50.0, 19.9',
+         near: 'Krakow',
          limit: '2'
      }
 
@@ -73,15 +75,18 @@ getPlaces = () => {
 
   }
 
-  marker = (place) => {
+  //create markers for each venue
+
+  createMarkers = (place) => {
     return (
       <Marker key = {place.venue.id}
-      longitude = {place.venue.location.lat}
-      latitude = {place.venue.location.lng}>
-      <Pin size = {40}/>
+      longitude = {place.venue.location.lng}
+      latitude = {place.venue.location.lat}>
+      <Pin size = {20}/>
       </Marker>
     );
   }
+
 
   render() {
 
@@ -95,7 +100,7 @@ getPlaces = () => {
       <div className="nav">
         <NavigationControl/>
       </div>
-      {this.state.places.map(this.marker)}
+      {this.state.places.map(this.createMarkers)}
     </MapGL>
       </main>
 
