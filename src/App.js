@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import MapGL, {Marker, NavigationControl} from 'react-map-gl';
+import MapGL, {Marker, NavigationControl, Popup} from 'react-map-gl';
 import './App.css';
 import Pin from './pin';
+import VenueInfo from './venue-info';
 
 
 class App extends Component {
@@ -20,7 +21,9 @@ this.state = {
 
   },
   places: [],
+  placeInfo: null
 };
+
 }
 
 componentDidMount() {
@@ -82,9 +85,27 @@ getPlaces = () => {
       <Marker key = {place.venue.id}
       longitude = {place.venue.location.lng}
       latitude = {place.venue.location.lat}>
-      <Pin size = {20}/>
+      <Pin size = {20} onClick={() => this.setState({placeInfo: place})}/>
       </Marker>
     );
+  }
+
+  //create popups draft
+
+  renderPopup = () => {
+
+    const {placeInfo} = this.state;
+
+    return placeInfo && (
+      <Popup
+      anchor = 'top'
+      longitude = {placeInfo.venue.location.lng}
+      latitude = {placeInfo.venue.location.lat}
+      onClose = {() => this.setState({placeInfo: null})}>
+      <VenueInfo info={placeInfo}/>
+      </Popup>
+    )
+
   }
 
 
@@ -101,6 +122,8 @@ getPlaces = () => {
         <NavigationControl/>
       </div>
       {this.state.places.map(this.createMarkers)}
+      {this.renderPopup()}
+
     </MapGL>
       </main>
 
