@@ -119,7 +119,7 @@ getPlaces = () => {
       mapboxApiAccessToken='pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
       onViewportChange={(container) => this.setState({container})}>
       <div className="nav">
-        <NavigationControl/>
+        <NavigationControl  onViewportChange={this.updateViewport}/>
       </div>
       {this.state.places.map(this.createMarkers)}
       {this.renderPopup()}
