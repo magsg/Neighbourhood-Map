@@ -14,7 +14,7 @@ import React, {Component} from 'react';
             Wikipedia
           </a>
         </div>
-        <img width={240} src={info.venue.categories.icon} />
+        <img width={240} />
       </div>
     );
   }

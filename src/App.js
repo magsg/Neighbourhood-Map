@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, NavigationControl, Popup} from 'react-map-gl';
 import './App.css';
-import Pin from './pin';
-import VenueInfo from './venue-info';
+import Pin from './Pin';
+import VenueInfo from './Venue-info';
+import VenueListItem from './Venue-list';
+
 
 
 class App extends Component {
@@ -23,6 +25,8 @@ this.state = {
   places: [],
   placeInfo: null
 };
+this.openPopup = this.openPopup.bind(this);
+
 
 }
 
@@ -87,12 +91,15 @@ getPlaces = () => {
       latitude = {place.venue.location.lat}>
       <Pin size = {20} onClick={() => this.setState({placeInfo: place})}/>
       </Marker>
+
+
+
     );
   }
 
   //create popups draft
 
-  renderPopup = () => {
+  renderPopup = (place) => {
 
     const {placeInfo} = this.state;
 
@@ -109,18 +116,52 @@ getPlaces = () => {
   }
 
 
+
+
+//laczymy marker z lista
+//
+// handleMarkerClickEvent = (event, latlng, index) => {
+//   this.setState ({
+//     selectedMarkerIndex = index,
+//     center = latlng//selected marker latlng
+//   })
+// }
+
+//we want both comp to refer to the same function
+
+// <ListPlaces
+// onClickMarker = this.handleMarkerClickEvent
+// locationsArray = {places}/>
+
+openPopup = (place) => {
+  return(
+ this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})})
+)
+}
+
+
   render() {
 
     return (
       <main>
+
       <MapGL
       {...this.state.container}
-      mapStyle= 'mapbox://styles/mapbox/streets-v10'
-      mapboxApiAccessToken='pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
-      onViewportChange={(container) => this.setState({container})}>
-      <div className="nav">
+      mapStyle = 'mapbox://styles/mapbox/streets-v10'
+      mapboxApiAccessToken = 'pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
+      onViewportChange = {(container) => this.setState({container})}>
+      <div className = "nav">
         <NavigationControl  onViewportChange={this.updateViewport}/>
       </div>
+
+      <div className = "listing-box">
+
+        <VenueListItem
+        stateChange = {this.openPopup}
+        venueItem = {this.state.places}/>
+      </div>
+
+
       {this.state.places.map(this.createMarkers)}
       {this.renderPopup()}
 
