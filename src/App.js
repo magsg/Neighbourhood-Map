@@ -15,7 +15,7 @@ this.state = {
   container: {
     latitude: 50.0,
        longitude: 19.9,
-       zoom: 10,
+       zoom: 12,
        bearing: 0,
        pitch: 0,
        width: 500,
@@ -23,7 +23,8 @@ this.state = {
 
   },
   places: [],
-  placeInfo: null
+  placeInfo: null,
+  color: "green"
 };
 this.openPopup = this.openPopup.bind(this);
 
@@ -89,7 +90,7 @@ getPlaces = () => {
       <Marker key = {place.venue.id}
       longitude = {place.venue.location.lng}
       latitude = {place.venue.location.lat}>
-      <Pin size = {20} onClick={() => this.setState({placeInfo: place})}/>
+      <Pin size = {20} fill={this.state.color} onClick={() => this.setState({placeInfo: place} && {color:"red"})}/>
       </Marker>
 
 
@@ -135,9 +136,9 @@ getPlaces = () => {
 
 openPopup = (place) => {
   return(
- this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})})
-)
-}
+ this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})}
+))}
+
 
 
   render() {
@@ -154,12 +155,9 @@ openPopup = (place) => {
         <NavigationControl  onViewportChange={this.updateViewport}/>
       </div>
 
-      <div className = "listing-box">
-
         <VenueListItem
         stateChange = {this.openPopup}
         venueItem = {this.state.places}/>
-      </div>
 
 
       {this.state.places.map(this.createMarkers)}

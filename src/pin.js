@@ -6,20 +6,36 @@ const ICON = `M20.2,15.7L20.2,15.7c1.1-1.6,1.8-3.6,1.8-5.7c0-5.6-4.5-10-10-10S2,
 
 const pinStyle = {
   cursor: 'pointer',
-  fill: '#d00',
+  // fill: 'green',
   stroke: 'none'
 };
 
 class Pin extends Component {
 
+//   constructor(props) {
+//   super(props);
+//   this.state = {
+//     pinStyle: {
+//       cursor: 'pointer',
+//          fill: this.props.pinColor,
+//          stroke: 'none',
+//     }
+//   }
+// }
+
+// someFn = () => {
+//   let color = "red";
+//   this.props.stateChange(color);
+// }
+
   render() {
-    const {size = 20, onClick} = this.props;
+    const {size = 20, onClick, fill} = this.props;
 
     return (
       <svg height={size} viewBox='0 0 24 24'
         style={{...pinStyle, transform: `translate(${-size/2}px,${-size}px)`}}
         onClick={onClick} >
-        <path d={ICON}/>
+        <path d={ICON} fill={fill}/>
       </svg>
     );
   }
