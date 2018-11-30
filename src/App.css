@@ -55,20 +55,36 @@ html, body, main {
 .nav {
   position: absolute;
  top: 0;
- left: 0;
+ right: 0;
  padding: 10px;
 }
 
 /* <Pin size = {20} fill={this.state.color} onClick={() => this.setState({placeInfo: place})}/>*/
 
 
-/* .pin {
-  cursor:pointer;
-  fill: green;
+.pin {
+  cursor: pointer;
+   fill: green;
   stroke: none;
   height:24px;
   width:24px;
-} */
+}
+
+.mapboxgl-marker {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border:1px solid gray;
+    background-color:lightblue;
+}
+
+.pin-flash{
+  cursor: pointer;
+   fill: red;
+  stroke: none;
+  height:24px;
+  width:24px;
+}
 
 @media screen and (min-width: 550px) {
   .listing-box {

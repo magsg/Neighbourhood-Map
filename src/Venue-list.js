@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
 
 class VenueListItem extends Component {
 
@@ -11,25 +10,33 @@ class VenueListItem extends Component {
     }
   }
 
-//trims off any extra white space from user input  
+//trims off any extra white space from user input
 
 updateQuery = (query) =>{
   this.setState({query: query.trim()})
 }
 
+
+
+
+
+
 render() {
 
-  const {venueItem, stateChange} = this.props;
+
+  const {venueItem, stateChange} = this.props
+  const {query} = this.state
 
 //adds filter functionality to search bar
 
   let showingVenues
-  if(this.state.query) {
-    const match = new RegExp(escapeRegExp(this.state.query), 'i')
+  if(query) {
+    const match = new RegExp(escapeRegExp(query), 'i')
     showingVenues = venueItem.filter((place) => match.test(place.venue.name))
   } else {
     showingVenues = venueItem
   }
+
 
 //returns a search bar and a list of venues from foursquare api
 
@@ -39,11 +46,12 @@ render() {
     <input className = "search"
     type = "text"
     placeholder = "Search places"
-    value = {this.state.query}
+    aria-label = "Search places"
+    value = {query}
     onChange = {(event) => this.updateQuery(event.target.value)}/>
     </div>
     <ol className = "list-places">
-    {showingVenues.map((place) => (
+    {showingVenues.map((place, index) => (
       <li key = {place.venue.id}
       onClick = {() => {stateChange(place)}}
       > {place.venue.name} </li>

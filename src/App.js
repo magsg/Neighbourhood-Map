@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, NavigationControl, Popup} from 'react-map-gl';
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import './App.css';
 import Pin from './Pin';
 import VenueInfo from './Venue-info';
 import VenueListItem from './Venue-list';
+import escapeRegExp from 'escape-string-regexp'
 
 
 
@@ -23,16 +25,21 @@ this.state = {
 
   },
   places: [],
+  markers: [],
+  filteredMarkers: [],
   placeInfo: null,
   color: "green"
+  // query:''
 };
-this.openPopup = this.openPopup.bind(this);
+// this.openPopup = this.openPopup.bind(this);
 
 
 }
 
 componentDidMount() {
         this.getPlaces();
+
+
         window.addEventListener('resize', this.resize);
         this.resize();
     }
@@ -85,18 +92,41 @@ getPlaces = () => {
 
   //create markers for each venue
 
-  createMarkers = (place) => {
-    return (
-      <Marker key = {place.venue.id}
+  createMarkers = () => {
+    const pins = this.state.places;
+
+pins.map(place => {
+  this.setState({markers: pins});
+})
+}
+  // let marker = new mapboxgl.Marker({
+  //   color: this.state.color,
+  // })
+  // .setLngLat([place.venue.location.lng, place.venue.location.lat])
+  // .addTo(this)
+  // marker.getElement().data = place.venue.name;
+  // marker.getElement().classList.add("pin")
+  //
+  // return marker;
+
+
+
+renderMarkers = (place) => {
+
+
+  return  (
+     <Marker key = {place.venue.id}
       longitude = {place.venue.location.lng}
-      latitude = {place.venue.location.lat}>
-      <Pin size = {20} fill={this.state.color} onClick={() => this.setState({placeInfo: place} && {color:"red"})}/>
+      latitude = {place.venue.location.lat}
+      style = {{backgroundColor:this.state.color}}
+      onClick={() => this.setState({placeInfo: place})}>
+
       </Marker>
+    )
 
+console.log("marker")
+}
 
-
-    );
-  }
 
   //create popups draft
 
@@ -112,7 +142,9 @@ getPlaces = () => {
       onClose = {() => this.setState({placeInfo: null})}>
       <VenueInfo info={placeInfo}/>
       </Popup>
-    )
+)
+
+
 
   }
 
@@ -121,12 +153,12 @@ getPlaces = () => {
 
 //laczymy marker z lista
 //
-// handleMarkerClickEvent = (event, latlng, index) => {
-//   this.setState ({
-//     selectedMarkerIndex = index,
-//     center = latlng//selected marker latlng
-//   })
-// }
+/*handleMarkerClickEvent = (event, place, index) => {
+  this.setState ({
+     selectedMarkerIndex = index,
+     placeInfo = place//selected marker latlng
+   })
+ }*/
 
 //we want both comp to refer to the same function
 
@@ -139,6 +171,40 @@ openPopup = (place) => {
  this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})}
 ))}
 
+// openPopup = (e, index, place) => {
+// e.preventDefault();
+// let markerPopup;
+//
+// // for (let i = 0; i < this.state.markers.length; i++) {
+// //
+// //          if (i === index) {
+// //
+// //            // console.log(i, index, activeMarker);
+// //
+// // }
+// // }
+// this.state.markers.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place}, )})
+//
+// }
+// updateQuery = (query) =>{
+//   this.setState({query: query})
+//   // this.filterMarkers(query);
+// }
+
+// filterMarkers = (query) => {
+//
+//   let filteredMarkers=this.state.places;
+//   if(query) {
+//     const match = new RegExp(escapeRegExp(query, 'i'))
+//     filteredMarkers = this.state.places.filter((place) => match.test(place.venue.name))
+//     this.setState({filteredMarkers: filteredMarkers})
+//   } else {
+//   this.setState({filteredMarkers: this.state.places})
+//   }
+//
+// }
+
+/*onLoad = {() => {this.createMarkers()}, console.log("markers")}*/
 
 
   render() {
@@ -150,17 +216,22 @@ openPopup = (place) => {
       {...this.state.container}
       mapStyle = 'mapbox://styles/mapbox/streets-v10'
       mapboxApiAccessToken = 'pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
-      onViewportChange = {(container) => this.setState({container})}>
+      onViewportChange = {(container) => this.setState({container})}
+      >
       <div className = "nav">
         <NavigationControl  onViewportChange={this.updateViewport}/>
       </div>
 
         <VenueListItem
         stateChange = {this.openPopup}
-        venueItem = {this.state.places}/>
+        venueItem = {this.state.places}
+        updateQuery = {this.updateQuery}
+        />
 
 
-      {this.state.places.map(this.createMarkers)}
+      {this.state.places.map(this.renderMarkers)}
+
+
       {this.renderPopup()}
 
     </MapGL>
