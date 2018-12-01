@@ -85,7 +85,8 @@ html, body, main, section, aside {
 }
 
 .flash-pin{
-  fill: red;
+  /* background-color: red; */
+  fill: red
 }
 
 @media screen and (min-width: 550px) {

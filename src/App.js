@@ -55,11 +55,10 @@ initMap = () => {
  });
  window.map = this.map;
 
-/* loads all markers upon init */
+/* loads navigation and all markers upon init map */
+
  this.map.on('load', () => {
    this.createMarkers();
-   // const nav = new mapboxgl.NavigationControl();
-   // map.addControl(nav, 'top-left');
    this.map.addControl(new mapboxgl.NavigationControl());
  })
 
@@ -136,7 +135,8 @@ getPlaces = () => {
         .addTo(this.map)
         marker.getElement().data = place.venue.name;
         // marker.getElement().classList.add("pin")
-        marker.getElement().addEventListener('click', () => {this.activateMarker, this.zoomOnLocation(place)})
+        // marker.getElement().addEventListener('click', this.animateMarker)
+        marker.getElement().addEventListener('click', (event) => {this.zoomOnLocation(place), event.target.classList.toggle("flash-pin"); })
         // console.log("fly")
         return marker;
     })
@@ -144,6 +144,7 @@ getPlaces = () => {
   }
 
   zoomOnLocation = (place) => {
+    // event.preventDefault();
     this.map.flyTo({
       center: [place.venue.location.lng, place.venue.location.lat],
       zoom: 15
@@ -152,12 +153,11 @@ getPlaces = () => {
   }
 
 
-  activateMarker = (event) => {
-    event.preventDefault();
-    event.target.classList.toggle("flash-pin");
-    console.log(event.target);
-    // this.zoomOnLocation(event.target);
-  }
+  // animateMarker = (event) => {
+  //   event.preventDefault();
+  //   event.target.classList.toggle("flash-pin");
+  //   console.log("animate")
+  // }
 
 
    openPopup = (event, place) => {
