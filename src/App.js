@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import MapGL, {Marker, NavigationControl, Popup} from 'react-map-gl';
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import './App.css';
-import Pin from './Pin';
+// import Pin from './Pin';
+import escapeRegExp from 'escape-string-regexp'
 import VenueInfo from './Venue-info';
 import VenueListItem from './Venue-list';
 
@@ -9,53 +11,74 @@ import VenueListItem from './Venue-list';
 
 class App extends Component {
 
-constructor(props) {
-super(props);
-this.state = {
-  container: {
-    latitude: 50.0,
-       longitude: 19.9,
-       zoom: 12,
-       bearing: 0,
-       pitch: 0,
-       width: 500,
-       height: 500,
-
-  },
+state = {
+  // container: {
+  //   latitude: 50.0,
+  //      longitude: 19.9,
+  //      zoom: 12,
+  //      bearing: 0,
+  //      pitch: 0,
+  //      width: 500,
+  //      height: 500,
+  //
+  // },
   places: [],
+  markers: [],
+  filteredMarkers: [],
   placeInfo: null,
-  color: "green"
+  activeMarker: null,
+  // color: "green"
 };
-this.openPopup = this.openPopup.bind(this);
 
+
+componentDidMount() {
+        this.initMap();
+        this.getPlaces();
+        // window.addEventListener('resize', this.resize);
+        // this.resize();
+    }
+
+  //   componentWillUnmount() {
+  //   window.removeEventListener('resize', this.resize);
+  // }
+
+
+//init map
+
+initMap = () => {
+  mapboxgl.accessToken = 'pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
+  this.map = new mapboxgl.Map({
+   container: "map",
+  center: [19.93658, 50.06143],
+   zoom: 10,
+   style: 'mapbox://styles/mapbox/streets-v10',
+ });
+ window.map = this.map;
+
+/* loads all markers upon init */
+ this.map.on('load', () => {
+   this.createMarkers();
+ })
 
 }
 
-componentDidMount() {
-        this.getPlaces();
-        window.addEventListener('resize', this.resize);
-        this.resize();
-    }
 
-    componentWillUnmount() {
-    window.removeEventListener('resize', this.resize);
-  }
 
   //resize map depending on viewport
 
-  resize = () => {
-  this.setState({
-    container: {
-      ...this.state.container,
-      width: this.props.width || window.innerWidth,
-      height: this.props.height || window.innerHeight
-    }
-  });
-};
-
-updateViewport = (container) => {
-   this.setState({container});
- }
+//   resize = () => {
+//   this.setState({
+//     container: {
+//       ...this.state.container,
+//       width: this.props.width || window.innerWidth,
+//       height: this.props.height || window.innerHeight
+//     }
+//   });
+// };
+//
+// updateViewport = (container) => {
+//    this.setState({container});
+//  }
 
 //fetch venues using foursquare api
 
@@ -83,39 +106,155 @@ getPlaces = () => {
 
   }
 
-  //create markers for each venue
+  //create markers and popups for each venue
 
-  createMarkers = (place) => {
-    return (
-      <Marker key = {place.venue.id}
-      longitude = {place.venue.location.lng}
-      latitude = {place.venue.location.lat}>
-      <Pin size = {20} fill={this.state.color} onClick={() => this.setState({placeInfo: place} && {color:"red"})}/>
-      </Marker>
+  createMarkers = () => {
+    const initialMarkers = this.state.places
 
+      .map(place => {
+        const popup = new mapboxgl.Popup({
+          closeOnClick: true,
+          offset: 25,
+          className: `${[place.venue.location.lng, place.venue.location.lat]}`
+        })
+          .setLngLat([place.venue.location.lng, place.venue.location.lat])
+          .setHTML(
+            `<h3>${place.venue.name}</h3>
+            <p>${place.venue.categories[0].name}</p>
+            <p>${place.venue.location.formattedAddress[0]}</p>`
+          )
 
+        let marker = new mapboxgl.Marker({
+          // color: "green",
+          className: place.venue.name
+        })
+        .setLngLat([place.venue.location.lng, place.venue.location.lat])
+        .setPopup(popup)
+        .addTo(this.map)
+        marker.getElement().data = place.venue.name;
+        // marker.getElement().classList.add("pin")
+        marker.getElement().addEventListener('click', () => {this.activateMarker, this.zoomOnLocation([place.venue.location.lng, place.venue.location.lat])})
+        // marker.getElement().addEventListener('click', this.zoomOnLocation([place.venue.location.lng, place.venue.location.lat]))
 
-    );
+        // console.log("fly")
+        return marker;
+    })
+   this.setState({ markers: initialMarkers, filteredMarkers: initialMarkers });
   }
+
+  zoomOnLocation = (place) => {
+    this.map.flyTo({
+      center: place,
+      zoom: 15
+    });
+    console.log("fly")
+  }
+
+
+  activateMarker = (event) => {
+    event.preventDefault();
+    event.target.classList.toggle("flash-pin");
+    console.log(event.target);
+    // this.zoomOnLocation(event.target);
+  }
+
+
+   openPopup = (event, place) => {
+    event.preventDefault();
+      const markersArray = this.state.filteredMarkers;
+      const location = place.join(",");
+      let markerPopup;
+/* loops through all markers checking if the clicked button matches
+any of them; if it does, then highlight the marker, otherwise close it */
+        for (let i = 0; i < markersArray.length; i++) {
+          markerPopup = markersArray[i].getPopup();
+          if (markerPopup.options.className === location) {
+            let activeMarker = markersArray[i];
+            activeMarker.getElement().classList.toggle("flash-pin")
+            activeMarker.togglePopup();
+            console.log(activeMarker)
+          } else {
+            markerPopup._onClickClose();
+          }
+        }
+      };
+
+
+    //   updateMarkers = (query) => {
+    //     let displayedMarkers = this.state.markers;
+    //
+    //     if (query) {
+    //         const match = new RegExp(escapeRegExp(query.toLowerCase(), 'i'))
+    //         displayedMarkers = this.state.markers.filter((myMarker) => {
+    //             return match.test(
+    //                 myMarker.getElement().data.toLowerCase()
+    //             )
+    //           }
+    //         )
+    //         this.setState({
+    //             filteredMarkers: displayedMarkers
+    //         })
+    //     } else {
+    //         this.setState({ fileteredMarkers: this.state.markers })
+    //     }
+    // }
+
+
+//     displayMarkers = () => {
+//     this.state.markers.forEach(marker => marker.remove());
+//     this.state.filteredMarkers.forEach(marker => {
+//         marker.addTo(this.map)
+//     })
+// }
+
+  // createMarkers = (place) => {
+  //   return (
+  //     <Marker key = {place.venue.id}
+  //     longitude = {place.venue.location.lng}
+  //     latitude = {place.venue.location.lat}>
+  //     <Pin size = {20} fill={this.state.color} onClick={() => this.setState({placeInfo: place} && {color:"red"})}/>
+  //     </Marker>
+  //
+  //
+  //
+  //   );
+  // }
 
   //create popups draft
 
-  renderPopup = (place) => {
+  // renderPopup = (place) => {
+  //
+  //   const {placeInfo} = this.state;
+  //
+  //   return placeInfo && (
+  //     <Popup
+  //     anchor = 'top'
+  //     longitude = {placeInfo.venue.location.lng}
+  //     latitude = {placeInfo.venue.location.lat}
+  //     onClose = {() => this.setState({placeInfo: null})}>
+  //     <VenueInfo info={placeInfo}/>
+  //     </Popup>
+  //   )
+  //
+  // }
 
-    const {placeInfo} = this.state;
-
-    return placeInfo && (
-      <Popup
-      anchor = 'top'
-      longitude = {placeInfo.venue.location.lng}
-      latitude = {placeInfo.venue.location.lat}
-      onClose = {() => this.setState({placeInfo: null})}>
-      <VenueInfo info={placeInfo}/>
-      </Popup>
-    )
-
-  }
-
+//   createPopUp = (place) => {
+//     let popUps = document.getElementsByClassName('mapboxgl-popup');
+//     const {placeInfo} = this.state;
+//     // Check if there is already a popup on the map and if so, remove it
+//     if (popUps[0]) popUps[0].remove();
+//
+//    this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})
+// return placeInfo && (
+//   let popup = new mapboxgl.Popup({ closeOnClick: false })
+//   .setLngLat([placeInfo.venue.location.lng, placeInfo.venue.location.lat])
+//   .setHTML(<VenueInfo info={placeInfo}/>)
+//   .addTo(this.map);
+//
+// )
+//  }
+//   )
+//   }
 
 
 
@@ -134,36 +273,41 @@ getPlaces = () => {
 // onClickMarker = this.handleMarkerClickEvent
 // locationsArray = {places}/>
 
-openPopup = (place) => {
-  return(
- this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})}
-))}
+// openPopup = (place) => {
+//   return(
+//  this.state.places.filter((location) => location.id === place.id).map(location => {this.setState({placeInfo: place})}
+// ))}
 
 
 
   render() {
-
+// this.displayMarkers();
     return (
+
       <main>
+<aside id="sidebar">
+      <VenueListItem
+      stateChange = {this.openPopup}
+      venueItem = {this.state.places}
+      markers = {this.state.markers}
+      map = {this.map}/>
+</aside>
+        <section>
+        <div
+          id="map"
+          role = "application"
+          tabIndex = "0">
 
-      <MapGL
-      {...this.state.container}
-      mapStyle = 'mapbox://styles/mapbox/streets-v10'
-      mapboxApiAccessToken = 'pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
-      onViewportChange = {(container) => this.setState({container})}>
-      <div className = "nav">
+
+      {/*}<div className = "nav">
         <NavigationControl  onViewportChange={this.updateViewport}/>
-      </div>
-
-        <VenueListItem
-        stateChange = {this.openPopup}
-        venueItem = {this.state.places}/>
+      </div>*/}
 
 
-      {this.state.places.map(this.createMarkers)}
-      {this.renderPopup()}
 
-    </MapGL>
+
+</div>
+    </section>
       </main>
 
     );
