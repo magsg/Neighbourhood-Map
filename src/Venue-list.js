@@ -18,7 +18,7 @@ updateQuery = (query) =>{
 
 render() {
 
-  const {venueItem, stateChange, markers, map} = this.props;
+  const {venueItem, stateChange, markers, map, zoom} = this.props;
 
 //adds filter functionality to search bar
 
@@ -87,7 +87,7 @@ console.log("filtering")
     <ol className = "list-places">
     {showingVenues.map((place) => (
       <li key = {place.venue.id}
-      onClick = {(event) => {stateChange(event, [place.venue.location.lng, place.venue.location.lat])}}
+      onClick = {(event) => {stateChange(event, [place.venue.location.lng, place.venue.location.lat]), zoom(place)}}
       > {place.venue.name} </li>
     ))}
     </ol>

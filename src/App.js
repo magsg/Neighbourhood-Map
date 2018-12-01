@@ -58,6 +58,9 @@ initMap = () => {
 /* loads all markers upon init */
  this.map.on('load', () => {
    this.createMarkers();
+   // const nav = new mapboxgl.NavigationControl();
+   // map.addControl(nav, 'top-left');
+   this.map.addControl(new mapboxgl.NavigationControl());
  })
 
 }
@@ -133,9 +136,7 @@ getPlaces = () => {
         .addTo(this.map)
         marker.getElement().data = place.venue.name;
         // marker.getElement().classList.add("pin")
-        marker.getElement().addEventListener('click', () => {this.activateMarker, this.zoomOnLocation([place.venue.location.lng, place.venue.location.lat])})
-        // marker.getElement().addEventListener('click', this.zoomOnLocation([place.venue.location.lng, place.venue.location.lat]))
-
+        marker.getElement().addEventListener('click', () => {this.activateMarker, this.zoomOnLocation(place)})
         // console.log("fly")
         return marker;
     })
@@ -144,7 +145,7 @@ getPlaces = () => {
 
   zoomOnLocation = (place) => {
     this.map.flyTo({
-      center: place,
+      center: [place.venue.location.lng, place.venue.location.lat],
       zoom: 15
     });
     console.log("fly")
@@ -282,6 +283,8 @@ any of them; if it does, then highlight the marker, otherwise close it */
 
   render() {
 // this.displayMarkers();
+
+
     return (
 
       <main>
@@ -290,7 +293,8 @@ any of them; if it does, then highlight the marker, otherwise close it */
       stateChange = {this.openPopup}
       venueItem = {this.state.places}
       markers = {this.state.markers}
-      map = {this.map}/>
+      map = {this.map}
+      zoom= {this.zoomOnLocation}/>
 </aside>
         <section>
         <div
