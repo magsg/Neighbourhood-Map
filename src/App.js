@@ -22,18 +22,21 @@ state = {
   //      height: 500,
   //
   // },
+  markerProperties: {
+    color: "green"
+  },
   places: [],
   markers: [],
   filteredMarkers: [],
   placeInfo: null,
   activeMarker: null,
-  // color: "green"
+  color: "green"
 };
 
 
 componentDidMount() {
         this.initMap();
-        this.getPlaces();
+        // this.getPlaces();
         // window.addEventListener('resize', this.resize);
         // this.resize();
     }
@@ -127,14 +130,14 @@ getPlaces = () => {
           )
 
         let marker = new mapboxgl.Marker({
-          // color: "green",
+          color: "green",
           className: place.venue.name
         })
         .setLngLat([place.venue.location.lng, place.venue.location.lat])
         .setPopup(popup)
         .addTo(this.map)
         marker.getElement().data = place.venue.name;
-        // marker.getElement().classList.add("pin")
+        // marker.getElement().firstChild.classList.add("pin")
         // marker.getElement().addEventListener('click', this.animateMarker)
         marker.getElement().addEventListener('click', (event) => {this.zoomOnLocation(place), event.target.classList.toggle("flash-pin"); })
         // console.log("fly")
@@ -150,6 +153,11 @@ getPlaces = () => {
       zoom: 15
     });
     console.log("fly")
+  }
+
+  changeColor = (color) => {
+    this.setState({color:color})
+    console.log("coloring")
   }
 
 
@@ -171,14 +179,42 @@ any of them; if it does, then highlight the marker, otherwise close it */
           markerPopup = markersArray[i].getPopup();
           if (markerPopup.options.className === location) {
             let activeMarker = markersArray[i];
-            activeMarker.getElement().classList.toggle("flash-pin")
+            // activeMarker.getElement().firstChild.classList.toggle("flash-pin")
+activeMarker._color="red";
+
+// let markerContainer = activeMarker.getElement();
+// let child = markerContainer.firstChild;
+// child.classList.toggle("flash-pin")
             activeMarker.togglePopup();
+
             console.log(activeMarker)
+            // console.log(child)
           } else {
             markerPopup._onClickClose();
           }
         }
       };
+
+      /*
+       * Open the drawer when the menu icon is clicked.
+       */
+
+       toggleSidebar = () =>{
+
+         const menu = document.querySelector('#menu');
+         const main = document.querySelector('#map');
+         const drawer = document.querySelector('.listing-box');
+
+         menu.addEventListener('click', (event) => {
+           drawer.classList.add('open');
+           event.stopPropagation();
+         });
+         console.log("toggle1")
+         main.addEventListener('click', (event) => {
+           drawer.classList.remove('open');
+         });
+console.log("toggle")
+       }
 
 
     //   updateMarkers = (query) => {
@@ -282,20 +318,26 @@ any of them; if it does, then highlight the marker, otherwise close it */
 
 
   render() {
-// this.displayMarkers();
 
 
     return (
 
       <main>
-<aside id="sidebar">
+      <section className="nav">
+      <a id="menu" onClick={(()=>{this.toggleSidebar()})}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M2 6h20v3H2zm0 5h20v3H2zm0 5h20v3H2z"/>
+        </svg>
+      </a>
+</section>
       <VenueListItem
       stateChange = {this.openPopup}
       venueItem = {this.state.places}
       markers = {this.state.markers}
       map = {this.map}
-      zoom= {this.zoomOnLocation}/>
-</aside>
+      zoom= {this.zoomOnLocation}
+      color={this.changeColor}/>
+
         <section>
         <div
           id="map"

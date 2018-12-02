@@ -18,7 +18,7 @@ updateQuery = (query) =>{
 
 render() {
 
-  const {venueItem, stateChange, markers, map, zoom} = this.props;
+  const {venueItem, stateChange, markers, map, zoom, color} = this.props;
 
 //adds filter functionality to search bar
 
@@ -76,7 +76,7 @@ console.log("filtering")
 //returns a search bar and a list of venues from foursquare api
 
   return (
-    <div className = "listing-box">
+    <aside className = "listing-box">
     <div className = "search-places">
     <input className = "search"
     type = "text"
@@ -91,7 +91,7 @@ console.log("filtering")
       > {place.venue.name} </li>
     ))}
     </ol>
-    </div>
+    </aside>
   )
 }
 

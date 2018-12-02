@@ -1,4 +1,4 @@
-html, body, main, section, aside {
+html, body, main, section {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -20,6 +20,19 @@ html, body, main, section, aside {
 
 /* search bar */
 
+#menu {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  padding: 1em;
+  z-index: 10;
+  line-height: 32px;
+}
+#menu svg {
+  width: 40px;
+  fill: darkgreen;
+}
+
 .search-places {
   position: fixed;
   width: 100%;
@@ -31,7 +44,7 @@ html, body, main, section, aside {
 .search {
   width: 100%;
   padding: 20px 20px 20px 60px;
-  background-image: url('./search.svg');
+  background-image: url('./icons/search.svg');
   background-repeat: no-repeat;
   background-position: 20px center;
   background-size: 3vw;
@@ -62,12 +75,16 @@ html, body, main, section, aside {
   transition: transform 0.3s ease;
 }
 
-.listing-box.open {
+.open {
   transform: translate(0,0);
+  width: 35%;
+  position: absolute;
+  z-index: 10;
 }
 
+
 .nav {
-  position: absolute;
+position: absolute;
  top: 0;
  left: 0;
  padding: 10px;
@@ -90,6 +107,7 @@ html, body, main, section, aside {
 }
 
 @media screen and (min-width: 550px) {
+
   .listing-box {
     position: absolute;
     transform: translate(0, 0);
@@ -106,9 +124,10 @@ main {
   /* flex-grow: 1; */
 }
 
-#sidebar{
-  width:25%;
+#menu {
+  display: none;
 }
+
 
 #map{
   width: 75%;
