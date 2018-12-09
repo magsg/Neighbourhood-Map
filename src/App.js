@@ -3,10 +3,8 @@ import MapGL, {Marker, NavigationControl, Popup} from 'react-map-gl';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import './App.css';
 // import Pin from './Pin';
-import escapeRegExp from 'escape-string-regexp'
 import VenueInfo from './Venue-info';
 import VenueListItem from './Venue-list';
-import escapeRegExp from 'escape-string-regexp'
 
 
 

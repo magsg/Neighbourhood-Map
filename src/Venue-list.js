@@ -91,6 +91,7 @@ console.log("filtering")
       > {place.venue.name} </li>
     ))}
     </ol>
+    <span className = "attr"></span>
     </aside>
   )
 }
