@@ -3,100 +3,78 @@ import escapeRegExp from 'escape-string-regexp'
 
 class VenueListItem extends Component {
 state = {
-      query: ''
-    }
+  query: ''
+}
 
 
-//trims off any extra white space from user input
+//trim off any extra white space from user input
 
-updateQuery = (query) =>{
-  this.setState({query: query.trim()})
-  // this.updateMarkers(query);
+updateQuery = (query) => {
+  this.setState({
+    query: query.trim()
+  })
 }
 
 
 render() {
 
-  const {venueItem, stateChange, markers, map, zoom, color} = this.props;
+    const {
+      venueItem,
+      stateChange,
+      markers,
+      map,
+      zoom
+    } = this.props;
 
-//adds filter functionality to search bar
+    //add filter functionality to search bar
 
-//   let showingVenues
-//   if(this.state.query) {
-//     const match = new RegExp(escapeRegExp(this.state.query), 'i')
-//     showingVenues = venueItem.filter((place) => match.test(place.venue.name))
-//   } else {
-//     showingVenues = venueItem
-//   }
-//
-//   let displayedMarkers
-//
-//   if (this.state.query) {
-//       const match = new RegExp(escapeRegExp(this.state.query.toLowerCase(), 'i'))
-//       displayedMarkers = markers.filter((myMarker) => {
-//       return match.test(
-//               myMarker.getElement().data.toLowerCase()
-//           )
-//         }
-//       )
-//       markers.map(marker => marker.remove());
-//       displayedMarkers.map(marker => {
-//             marker.addTo(map)
-//         })
-//       console.log("filtering")
-//   } else {
-// displayedMarkers = markers
-//   }
+    let showingVenues
+    let displayedMarkers
 
-let showingVenues
-let displayedMarkers
+    if (this.state.query) {
+      const match = new RegExp(escapeRegExp(this.state.query.toLowerCase(), 'i'))
+      showingVenues = venueItem.filter((place) => match.test(place.venue.name.toLowerCase()))
+      displayedMarkers = markers.filter((myMarker) => {
+        return match.test(
+          myMarker.getElement().data.toLowerCase()
+        )
+      })
+      markers.map(marker => marker.remove());
+      displayedMarkers.map(marker => {
+        marker.addTo(map)
+      })
+      console.log("filtering")
+    } else {
+      showingVenues = venueItem
+      displayedMarkers = markers
+    }
 
-if(this.state.query) {
-  const match = new RegExp(escapeRegExp(this.state.query.toLowerCase(), 'i'))
-  showingVenues = venueItem.filter((place) => match.test(place.venue.name))
-  displayedMarkers = markers.filter((myMarker) => {
-    return match.test(
-      myMarker.getElement().data.toLowerCase()
-    )
-  }
-)
-markers.map(marker => marker.remove());
-displayedMarkers.map(marker => {
-  marker.addTo(map)
-})
-console.log("filtering")
-} else {
-  showingVenues = venueItem
-  displayedMarkers = markers
-}
-
-
-
-
-//returns a search bar and a list of venues from foursquare api
+//return a search bar and a list of venues
 
   return (
     <aside className = "listing-box">
-    <div className = "search-places">
-    <input className = "search"
-    type = "text"
-    placeholder = "Search places"
-    value = {this.state.query}
-    onChange = {(event) => {this.updateQuery(event.target.value)}}/>
-    </div>
-    <ol className = "list-places">
-    {showingVenues.map((place, index) => (
-      <li key = {place.venue.id}
-      onClick = {(event) => {stateChange(event, [place.venue.location.lng, place.venue.location.lat]), zoom(place)}}
-      > {place.venue.name} </li>
-    ))}
-    </ol>
-    <span className = "attr"></span>
+      <div className = "search-places">
+        <input className = "search"
+          type = "text"
+          placeholder = "Search"
+          aria-label="Search for places"
+          value = {this.state.query}
+          onChange = {(event) => {this.updateQuery(event.target.value)}}/>
+      </div>
+      <ol className = "list-places">
+        {showingVenues.map((place, index) => (
+          <li key = {place.venue.id}
+            role="link"
+            tabIndex="0"
+            onClick = {(event) => {stateChange(event, [place.venue.location.lng, place.venue.location.lat]), zoom(place)}}
+            onKeyPress = {(event) => {stateChange(event, [place.venue.location.lng, place.venue.location.lat]), zoom(place)}}
+          > {place.venue.name} </li>
+        ))}
+      </ol>
+      <span tabIndex="0" className = "attr" role="img" aria-label="powered by foursquare"></span>
     </aside>
   )
 }
-
-
 }
 
 export default VenueListItem

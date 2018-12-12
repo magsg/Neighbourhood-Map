@@ -9,12 +9,10 @@ html, body, main, section, aside {
 /* map */
 
 #map {
-  border-left: 1px solid #fff;
   position: fixed;
   width: 100%;
   top: 0;
   bottom: 0;
-  /* padding: 20px; */
   box-sizing: border-box;
 }
 
@@ -23,19 +21,17 @@ html, body, main, section, aside {
 #menu {
   display: inline-block;
   position: absolute;
-  left: 0;
+  left: 10px;
   padding: 1em;
   z-index: 10;
-  line-height: 32px;
-
-}
-svg {
+  height: 40px;
   width: 40px;
-  fill: black;
+  border: 2px solid darkgrey;
+  border-radius: 5px;
   background-color: white;
-  border: 1px solid #d5d8df;
-  border-radius: 4px;
-  cursor: pointer;
+  background-image: url('./icons/search.svg');
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .search-places {
@@ -58,6 +54,8 @@ svg {
   outline: none;
 }
 
+/* Foursquare attribution */
+
 .attr {
   width: 100%;
   padding: 10px 0;
@@ -69,12 +67,12 @@ svg {
   position: fixed;
 }
 
-
 /* venue list */
 
 .list-places {
   position: relative;
   padding-top: 4em;
+  font-size: 12px;
 }
 
 .listing-box {
@@ -93,70 +91,56 @@ svg {
 }
 
 .open {
-  transform: translate(0,0);
+  transform: translate(0, 0);
   width: 35%;
   position: absolute;
   z-index: 10;
 }
 
-
 .nav {
-position: absolute;
- top: 0;
- right: 0;
- padding: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
 }
 
-/* <Pin size = {20} fill={this.state.color} onClick={() => this.setState({placeInfo: place})}/>*/
+/* marker highlight */
 
-
-.pin {
-  cursor:pointer;
-  fill: green;
-  stroke: none;
-  height:24px;
-  width:24px;
-}
-
-.flash-pin{
-  /* background-color: red; */
-  fill: red
+.flash-pin {
+  -webkit-box-shadow: inset 0px 0px 30px -6px red;
+  -moz-box-shadow: inset 0px 0px 30px -6px red;
+  box-shadow: inset 0px 0px 30px -6px red;
 }
 
 @media screen and (min-width: 550px) {
-
   .listing-box {
     position: fixed;
     width: 25%;
     transform: translate(0, 0);
   }
-
   .search {
     padding: 20px 20px 20px 60px;
     background-position: 20px center;
     background-size: 2em;
     font-size: 1em;
   }
-
-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-}
-
-main {
-  width: auto;
-  /* flex-grow: 1; */
-}
-
-#menu {
-  display: none;
-}
-
-
-#map{
-  width: 75%;
-  right: 0;
-}
-
+  .list-places {
+    font-size: 16px;
+  }
+  body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  main {
+    width: auto;
+    /* flex-grow: 1; */
+  }
+  #menu {
+    display: none;
+  }
+  #map {
+    width: 75%;
+    right: 0;
+  }
 }
