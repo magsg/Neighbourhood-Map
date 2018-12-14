@@ -119,6 +119,10 @@ html, body, main, section, aside {
   cursor: pointer;
 }
 
+.hide {
+  visibility: hidden;
+}
+
 @media screen and (min-width: 550px) {
   .listing-box {
     position: fixed;

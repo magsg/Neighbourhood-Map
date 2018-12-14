@@ -37,13 +37,13 @@ render() {
           myMarker.getElement().data.toLowerCase()
         )
       })
-      markers.map(marker => marker.remove());
+      markers.map(marker => marker.getElement().classList.add("hide"))
       displayedMarkers.map(marker => {
-        marker.addTo(map)
+        marker.getElement().classList.remove("hide")
       })
     } else {
       showingVenues = venueItem
-      displayedMarkers = markers
+      markers.map(marker => marker.getElement().classList.remove("hide"))
     }
 
 //return a search bar and a list of venues
