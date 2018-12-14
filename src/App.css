@@ -35,7 +35,7 @@ html, body, main, section, aside {
 }
 
 .search-places {
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   top: 0;
   border-bottom: 1px solid #d5d8df;
@@ -71,8 +71,9 @@ html, body, main, section, aside {
 
 .list-places {
   position: relative;
-  padding-top: 4em;
+  /* padding-top: 4em; */
   font-size: 12px;
+  cursor: pointer;
 }
 
 .listing-box {
@@ -88,6 +89,7 @@ html, body, main, section, aside {
   z-index: 1;
   transform: translate(-400px, 0);
   transition: transform 0.3s ease;
+  display: none;
 }
 
 .open {
@@ -95,11 +97,12 @@ html, body, main, section, aside {
   width: 35%;
   position: absolute;
   z-index: 10;
+  display: block;
 }
 
 .nav {
   position: absolute;
-  top: 0;
+  top: 10px;
   right: 0;
   padding: 10px;
 }
@@ -112,11 +115,16 @@ html, body, main, section, aside {
   box-shadow: inset 0px 0px 30px -6px red;
 }
 
+.mapboxgl-marker {
+  cursor: pointer;
+}
+
 @media screen and (min-width: 550px) {
   .listing-box {
     position: fixed;
     width: 25%;
     transform: translate(0, 0);
+    display: block;
   }
   .search {
     padding: 20px 20px 20px 60px;

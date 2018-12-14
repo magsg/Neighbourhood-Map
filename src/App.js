@@ -9,9 +9,7 @@ class App extends Component {
 state = {
   places: [],
   markers: [],
-  filteredMarkers: [],
-  activeMarker: null,
-  color: "green"
+  // filteredMarkers: []
 };
 
 
@@ -53,7 +51,7 @@ getPlaces = () => {
     v: "20180323",
     section: 'food',
     near: 'Krakow',
-    limit: '2'
+    limit: '5'
   }
 
   fetch(url + new URLSearchParams(parameters))
@@ -62,11 +60,9 @@ getPlaces = () => {
       this.setState({
         places: parsedJson.response.groups[0].items
       });
-
-      console.log(this.state.places); //it's fetching!
+      // console.log(this.state.places);
     })
-    .catch(error => alert('Oops! There was a problem loading the data from Foursquare API' + error))
-
+    .catch(error => alert('There was a problem loading the data from Foursquare API' + error))
 }
 
 //create markers and popups for each venue
@@ -78,18 +74,17 @@ createMarkers = () => {
       const popup = new mapboxgl.Popup({
           closeOnClick: true,
           offset: 25,
-          className: `${[place.venue.location.lng, place.venue.location.lat]}`
+          className: `${[place.venue.location.lng, place.venue.location.lat]}`,
         })
         .setLngLat([place.venue.location.lng, place.venue.location.lat])
         .setHTML(
           `<h3>${place.venue.name}</h3>
-            <p>${place.venue.categories[0].name}</p>
-            <p> Address: ${place.venue.location.formattedAddress[0]}</p>`
+            <span>${place.venue.categories[0].name}</span>
+            <span> Address: ${place.venue.location.formattedAddress[0]}</span>`
         )
 
       let marker = new mapboxgl.Marker({
-          color: this.state.color,
-          className: place.venue.name
+          color: "green",
         })
         .setLngLat([place.venue.location.lng, place.venue.location.lat])
         .setPopup(popup)
@@ -101,8 +96,8 @@ createMarkers = () => {
       return marker;
     })
   this.setState({
-    markers: initialMarkers,
-    filteredMarkers: initialMarkers
+    markers: initialMarkers
+    // filteredMarkers: initialMarkers
   });
 }
 
@@ -120,18 +115,16 @@ zoomOnLocation = (place) => {
 
 openPopup = (event, place) => {
   event.preventDefault();
-  const markersArray = this.state.filteredMarkers;
+  const markersArray = this.state.markers;
   const location = place.join(",");
   let markerPopup;
 
   for (let i = 0; i < markersArray.length; i++) {
     markerPopup = markersArray[i].getPopup();
     if (markerPopup.options.className === location) {
-      let activeMarker = markersArray[i];
-      activeMarker.getElement().firstChild.classList.toggle("flash-pin")
-      activeMarker.togglePopup();
-
-      console.log(activeMarker)
+      let clickedMarker = markersArray[i];
+      clickedMarker.getElement().firstChild.classList.toggle("flash-pin")
+      clickedMarker.togglePopup();
     } else {
       markerPopup._onClickClose();
     }
@@ -151,11 +144,9 @@ toggleSidebar = () => {
     drawer.classList.add('open');
     event.stopPropagation();
   });
-  console.log("toggle1")
   main.addEventListener('click', (event) => {
     drawer.classList.remove('open');
   });
-  console.log("toggle")
 }
 
 
@@ -164,13 +155,6 @@ render() {
   return (
 
     <main>
-      <section className="nav">
-        <button
-          id="menu"
-          aria-label= "search"
-          onClick={(()=>{this.toggleSidebar()})}>
-        </button>
-      </section>
 
       <VenueListItem
         stateChange={this.openPopup}
@@ -178,15 +162,20 @@ render() {
         markers={this.state.markers}
         map={this.map}
         zoom={this.zoomOnLocation}
-        color={this.changeColor}/>
+        />
 
-      <section>
         <div
           id="map"
           role="application"
           aria-label="Mapbox map application">
+            <button
+            id="menu"
+            className="nav"
+            aria-label= "search"
+            onClick={(()=>{this.toggleSidebar()})}>
+            </button>
         </div>
-      </section>
+
     </main>
     );
   }

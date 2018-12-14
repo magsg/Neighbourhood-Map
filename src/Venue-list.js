@@ -7,11 +7,9 @@ state = {
 }
 
 
-//trim off any extra white space from user input
-
 updateQuery = (query) => {
   this.setState({
-    query: query.trim()
+    query: query
   })
 }
 
@@ -43,7 +41,6 @@ render() {
       displayedMarkers.map(marker => {
         marker.addTo(map)
       })
-      console.log("filtering")
     } else {
       showingVenues = venueItem
       displayedMarkers = markers
