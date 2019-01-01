@@ -22,7 +22,7 @@ componentDidMount() {
 //initialise map
 
 initMap = () => {
-  mapboxgl.accessToken = 'pk.eyJ1Ijoia290ZWs2IiwiYSI6ImNqam42MmFnejF0aXYza20wdXh4dGFwcXcifQ.e-GDBXL7FGLyrbtdyy-gkw'
+  mapboxgl.accessToken = 'yourToken'
   this.map = new mapboxgl.Map({
     container: "map",
     center: [19.93658, 50.06143],
@@ -46,8 +46,8 @@ initMap = () => {
 getPlaces = () => {
   let url = 'https://api.foursquare.com/v2/venues/explore?'
   let parameters = {
-    client_id: 'VSHIOMXPUT1YOHRSEI2I5FJ1FWHT2JNFAY3ZOGV5MZJ10WGJ',
-    client_secret: 'R43ANCXPWOWCTOH0FKIAJZS45BLEZ2ANU1XH1PY5DRVWJO4X',
+    client_id: 'clientId',
+    client_secret: 'clientSecret',
     v: "20180323",
     section: 'food',
     near: 'Krakow',
